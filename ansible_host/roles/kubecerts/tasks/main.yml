@@ -1,0 +1,67 @@
+---
+# tasks kubecerts
+
+- name: Ensure certs dir
+  file:
+    path: "{{ kubecerts_cert_dir }}"
+    state: directory
+    mode: 0700
+
+- name: Ensure config files
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ kubecerts_cert_dir }}/{{ item }}"
+    mode: 0600
+  with_items:
+    - ca-config.json
+    - ca-csr.json
+    - kubernetes-csr.json
+
+- stat:
+    path: "{{ kubecerts_cert_dir }}/ca.pem"
+  register: file_ca_cert
+
+- stat:
+    path: "{{ kubecerts_cert_dir }}/ca-key.pem"
+  register: file_ca_key
+  
+- stat:
+    path: "{{ kubecerts_cert_dir }}/ca.csr"
+  register: file_ca_csr
+
+- name: Generate CA certificate
+  shell: cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+  args:
+    chdir: "{{ kubecerts_cert_dir }}"
+  when:
+    - file_ca_cert.stat.exists == False
+    - file_ca_key.stat.exists == False
+    - file_ca_csr.stat.exists == False
+
+- stat:
+    path: "{{ kubecerts_cert_dir }}/kubernetes.pem"
+  register: file_kubernetes_cert
+
+- stat:
+    path: "{{ kubecerts_cert_dir }}/kubernetes-key.pem"
+  register: file_kubernetes_key
+
+- stat:
+    path: "{{ kubecerts_cert_dir }}/kubernetes.csr"
+  register: file_kubernetes_csr
+
+- name: Generate kubernetes certificate
+  shell: |
+    cfssl gencert \
+      -ca=ca.pem \
+      -ca-key=ca-key.pem \
+      -config=ca-config.json \
+      -profile=kubernetes \
+      kubernetes-csr.json | cfssljson -bare kubernetes
+  args:
+    chdir: "{{ kubecerts_cert_dir }}"
+  when:
+    - file_kubernetes_cert.stat.exists == False
+    - file_kubernetes_key.stat.exists == False
+    - file_kubernetes_csr.stat.exists == False
+

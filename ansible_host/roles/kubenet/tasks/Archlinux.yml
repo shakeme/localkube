@@ -1,0 +1,17 @@
+---
+# tasks kubenet Archlinux
+
+- name: Ensure entries in /etc/hosts
+  blockinfile:
+    path: /etc/hosts
+    marker: "# {mark} ANSIBLE MANAGED BLOCK (localkube role kubenet)"
+    insertbefore: "# End of file"
+    block: |
+      10.240.0.11     etcd1.example.com       etcd1
+      10.240.0.12     etcd2.example.com       etcd2
+      10.240.0.21     controller1.example.com controller1
+      10.240.0.22     controller2.example.com controller2
+      10.240.0.31     worker1.example.com     worker1
+      10.240.0.32     worker2.example.com     worker2
+      10.240.0.200	  lb.example.com		      lb
+  become: true

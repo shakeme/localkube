@@ -1,0 +1,21 @@
+---
+
+- name: First sudo action to prevent aur ask for sudo
+  hosts: all
+  tasks:
+    - shell: echo "hello"
+      changed_when: false
+      become: true
+
+
+- name: Prepare host
+  hosts: all
+  roles:
+    - cfssl
+    - kubecerts
+    - kubenet
+
+
+
+# vim: ai expandtab ts=2 sts=2 sw=2
+ 

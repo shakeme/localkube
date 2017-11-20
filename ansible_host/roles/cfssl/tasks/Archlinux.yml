@@ -1,0 +1,8 @@
+---
+# tasks cfssl Archlinux
+
+- name: Install
+  aur:
+    name: cfssl
+    state: present
+

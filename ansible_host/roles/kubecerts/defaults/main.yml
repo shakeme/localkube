@@ -1,0 +1,9 @@
+---
+# defaults kubecerts
+
+
+kubecerts_cert_dir: "{{ ansible_env.HOME }}/.localkube/certs"
+kubecerts_expiry: 8760h
+
+kubecerts_kubernetes_public_ip_address: 10.240.0.20
+
