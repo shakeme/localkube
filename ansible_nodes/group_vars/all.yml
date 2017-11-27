@@ -1,5 +1,5 @@
 ---
 # group_vars all
 
-etcd_initial_cluster_state: existing
+etcd_initial_cluster_state: new
 
