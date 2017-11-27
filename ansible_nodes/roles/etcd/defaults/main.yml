@@ -1,0 +1,15 @@
+---
+# defaults etcd
+
+etcd_version: 3.2.10
+etcd_checksum: "sha256:3f889e6e6ddf73781b14fa40bd4e99eb5ffcbff588a750d3b23517667bffc834"
+etcd_arch: amd64
+etcd_target_dir: /usr/bin
+
+etcd_cluster_hosts_fqdn:
+  - etcd1=https://10.240.0.11:2380
+  - etcd2=https://10.240.0.12:2380
+  - etcd3=https://10.240.0.13:2380
+
+etcd_initial_cluster_state: new
+

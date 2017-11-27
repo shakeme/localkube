@@ -1,0 +1,98 @@
+---
+# tasks etcd
+
+- stat:
+    path: /usr/bin/etcd
+  register: result_etcd
+
+- block:
+  - name: Create lib directory
+    file:
+      path: /var/lib/etcd
+      state: directory
+      mode: 0750
+      owner: root
+      group: root
+    become: true
+
+  - name: Get etcd release
+    get_url:
+      url: https://github.com/coreos/etcd/releases/download/v{{ etcd_version }}/etcd-v{{ etcd_version }}-linux-{{ etcd_arch }}.tar.gz
+      checksum: "{{ etcd_checksum }}"
+      dest: /tmp/etcd.tar.gz
+
+  - name: Ensure unarchive directory
+    file:
+      path: /tmp/etcd
+      state: directory
+
+  - name: Unarchive
+    unarchive:
+      src: /tmp/etcd.tar.gz
+      dest: /tmp/etcd
+      extra_opts:
+        - "--strip-components=1"
+      remote_src: yes
+
+  - name: Copy binaries to target dir
+    copy:
+      src: /tmp/etcd/{{ item }}
+      dest: "{{ etcd_target_dir }}/{{ item }}"
+      remote_src: yes
+      mode: 0755
+      owner: root
+      group: root
+    become: true
+    with_items:
+      - etcd
+      - etcdctl
+
+  - name: Cleanup
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+      - /tmp/etcd.tar.gz
+      - /tmp/etcd
+    
+  when: result_etcd.stat.exists == False
+  # end block
+
+- name: Ensure bash alias for etcdctl
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.bash_aliases"
+    regexp: "^alias etcdctl="
+    line: "alias etcdctl=\"sudo etcdctl --ca-file /srv/kubernetes/ca.pem --cert-file /srv/kubernetes/kubernetes.pem --key-file /srv/kubernetes/kubernetes-key.pem\""
+
+- name: Ensure service definition
+  template:
+    src: etcd.service.j2
+    dest: /etc/systemd/system/etcd.service
+    mode: 0644
+    owner: root
+    group: root
+  become: true
+  register: result_etcd_config
+
+- name: Reload services daemon
+  systemd:
+    daemon_reload: yes
+  become: true
+  when: 
+    - result_etcd_config.changed
+    - ansible_service_mgr == "systemd"
+
+- name: Restart service
+  service:
+    name: etcd
+    state: restarted
+  become: true
+  when: result_etcd_config.changed
+
+- name: Enable and start service
+  service:
+    name: etcd
+    enabled: yes
+    state: started
+  become: true
+

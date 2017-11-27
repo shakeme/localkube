@@ -23,15 +23,28 @@ Vagrant.configure("2") do |config|
   # provision
   config.vm.provision "shell", inline: <<-SHELL
     #apt-get update
-    apt-get install --assume-yes python
+    echo "PROVOSION common"
+    apt-get install --assume-yes \
+      python \
+      virtualbox-guest-utils
   SHELL
 
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "ansible/site.yml"
-    #ansible.verbose = "vvv"
+  config.vm.provision "shell" do |s|
+    ssh_pub_key = File.readlines("#{Dir.home}/.ssh/id_rsa.pub").first.strip
+    s.inline = <<-SHELL
+      echo #{ssh_pub_key} >> /home/ubuntu/.ssh/authorized_keys
+    SHELL
   end
 
-  # do not change the number without modify the ansible inventory/playbook
+#  config.vm.provision "ansible" do |ansible|
+#    ansible.playbook = "ansible/site.yml"
+#    #ansible.verbose = "vvv"
+#    ansible.groups = {
+#      "etcd"  => ["etcd[1:2]"]
+#    }
+#  end
+
+  # do not change the number 
   NE = 3
   (1..NE).each do |machine_id|
     config.vm.define "etcd#{machine_id}" do |etcd|
@@ -41,7 +54,7 @@ Vagrant.configure("2") do |config|
   end
 
 
-  # do not change the number without modify the ansible inventory/playbook
+  # do not change the number
   NC = 2
   (1..NC).each do |machine_id|
     config.vm.define "controller#{machine_id}" do |controller|
@@ -50,7 +63,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  # do not change the number without modify the ansible inventory/playbook
+  # do not change the number
   NW = 2
   (1..NW).each do |machine_id|
     config.vm.define "worker#{machine_id}" do |worker|
@@ -63,12 +76,16 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  # do not change the number without modify the ansible inventory/playbook
+  # do not change the number
   NL = 2
   (1..NL).each do |machine_id|
     config.vm.define "lb#{machine_id}" do |lb|
       lb.vm.hostname = "lb#{machine_id}"
       lb.vm.network "private_network", ip: "10.240.0.4#{machine_id}"
+
+      lb.vm.provider "virtualbox" do |vb|
+        vb.memory = "256"
+      end
     end
   end
 

@@ -1,0 +1,17 @@
+[etcd]
+etcd1.example.com   ansible_user=ubuntu
+etcd2.example.com   ansible_user=ubuntu
+etcd3.example.com   ansible_user=ubuntu
+
+[controller]
+controller1.example.com   ansible_user=ubuntu
+controller2.example.com   ansible_user=ubuntu
+
+[worker]
+worker1.example.com   ansible_user=ubuntu
+worker2.example.com   ansible_user=ubuntu
+
+[lb]
+lb1.example.com   ansible_user=ubuntu
+lb2.example.com   ansible_user=ubuntu
+

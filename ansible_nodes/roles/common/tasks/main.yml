@@ -1,0 +1,28 @@
+---
+# tasks common
+
+- name: Ensure entries in /etc/hosts
+  blockinfile:
+    path: /etc/hosts
+    marker: "# {mark} ANSIBLE MANAGED BLOCK (localkube hosts)"
+    insertbefore: "# End of file"
+    block: |
+      10.240.0.11   etcd1.example.com       etcd1
+      10.240.0.12   etcd2.example.com       etcd2
+      10.240.0.13   etcd3.example.com       etcd3
+      10.240.0.21   controller1.example.com controller1
+      10.240.0.22   controller2.example.com controller2
+      10.240.0.31   worker1.example.com     worker1
+      10.240.0.32   worker2.example.com     worker2
+      10.240.0.41   lb1.example.com         lb1
+      10.240.0.42   lb2.example.com         lb2
+      10.240.0.200  lb.example.com          lb
+  become: true
+
+- name: Ensure .bash_aliases file
+  copy:
+    dest: "{{ ansible_env.HOME }}/.bash_aliases"
+    content: ""
+    force: no
+    mode: 0644
+
