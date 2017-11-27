@@ -62,7 +62,7 @@
   lineinfile:
     path: "{{ ansible_env.HOME }}/.bash_aliases"
     regexp: "^alias etcdctl="
-    line: "alias etcdctl=\"sudo etcdctl --ca-file /srv/kubernetes/ca.pem --cert-file /srv/kubernetes/kubernetes.pem --key-file /srv/kubernetes/kubernetes-key.pem\""
+    line: "alias etcdctl=\"sudo etcdctl --ca-file /srv/kubernetes/ca.pem\""
 
 - name: Ensure service definition
   template:
