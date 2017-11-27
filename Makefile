@@ -12,6 +12,14 @@ all: vagrant-up provision
 vagrant-up:
 	vagrant up
 
+.PHONY: vagrant-suspend
+vagrant-suspend:
+	vagrant suspend
+
+.PHONY: vagrant-resume
+vagrant-resume:
+	vagrant resume
+
 .PHONY: provision
 provision: provision-host provision-nodes
 
