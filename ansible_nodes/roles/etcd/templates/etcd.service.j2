@@ -3,7 +3,7 @@ Description=etcd
 Documentation=https://github.com/coreos
 
 [Service]
-ExecStart=/usr/bin/etcd --name {{ ansible_hostname }} \
+ExecStart={{ etcd_target_dir }}/etcd --name {{ ansible_hostname }} \
   --cert-file=/srv/kubernetes/kubernetes.pem \
   --key-file=/srv/kubernetes/kubernetes-key.pem \
   --peer-cert-file=/srv/kubernetes/kubernetes.pem \

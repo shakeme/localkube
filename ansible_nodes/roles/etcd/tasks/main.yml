@@ -2,7 +2,7 @@
 # tasks etcd
 
 - stat:
-    path: /usr/bin/etcd
+    path: {{ etcd_target_dir }}/etcd
   register: result_etcd
 
 - block:
