@@ -64,7 +64,7 @@
     regexp: "^alias etcdctl="
     line: "alias etcdctl=\"sudo etcdctl --ca-file /srv/kubernetes/ca.pem\""
 
-- name: Ensure service definition
+- name: Ensure service files
   template:
     src: etcd.service.j2
     dest: /etc/systemd/system/etcd.service
@@ -74,7 +74,7 @@
   become: true
   register: result_etcd_config
 
-- name: Reload services daemon
+- name: Reload service daemon
   systemd:
     daemon_reload: yes
   become: true
