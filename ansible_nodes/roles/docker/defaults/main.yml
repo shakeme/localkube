@@ -1,0 +1,6 @@
+---
+# defaults docker
+
+docker_apt_arch: amd64
+docker_release_channel: stable
+

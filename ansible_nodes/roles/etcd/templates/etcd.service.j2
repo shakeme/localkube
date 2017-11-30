@@ -4,12 +4,12 @@ Documentation=https://github.com/coreos
 
 [Service]
 ExecStart={{ etcd_target_dir }}/etcd --name {{ ansible_hostname }} \
-  --cert-file=/srv/kubernetes/kubernetes.pem \
-  --key-file=/srv/kubernetes/kubernetes-key.pem \
-  --peer-cert-file=/srv/kubernetes/kubernetes.pem \
-  --peer-key-file=/srv/kubernetes/kubernetes-key.pem \
-  --trusted-ca-file=/srv/kubernetes/ca.pem \
-  --peer-trusted-ca-file=/srv/kubernetes/ca.pem \
+  --cert-file={{ etcd_cert_dir }}/kubernetes.pem \
+  --key-file={{ etcd_cert_dir }}/kubernetes-key.pem \
+  --peer-cert-file={{ etcd_cert_dir }}/kubernetes.pem \
+  --peer-key-file={{ etcd_cert_dir }}/kubernetes-key.pem \
+  --trusted-ca-file={{ etcd_cert_dir }}/ca.pem \
+  --peer-trusted-ca-file={{ etcd_cert_dir }}/ca.pem \
   --initial-advertise-peer-urls https://{{ etcd_internal_ip }}:2380 \
   --listen-peer-urls https://{{ etcd_internal_ip }}:2380 \
   --listen-client-urls https://{{ etcd_internal_ip }}:2379,http://127.0.0.1:2379 \

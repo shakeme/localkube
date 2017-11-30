@@ -1,5 +1,11 @@
 ---
 # group_vars all
 
+certificate_directory: /etc/kubernetes/certs
+
 etcd_initial_cluster_state: new
+etcd_server_urls:
+  - https://etcd1.example.com:2379
+  - https://etcd2.example.com:2379
+  - https://etcd3.example.com:2379
 

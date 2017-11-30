@@ -1,0 +1,19 @@
+---
+# defaults kubernetes-controller
+
+kube_controller_arch: amd64
+kube_controller_version: 1.8.4
+
+kube_controller_checksum_apiserver: "sha256:2b9b9e414169675cc39a6f9c40927e3fc8b330362e1cc8c2eb06ca3af722cf83"
+kube_controller_checksum_controller_manager: "sha256:192ccb1755e7c3cc6dda1e4dc9bccffd5392db0cd2bc4f69968d627abec50a47"
+kube_controller_checksum_scheduler: "sha256:881d9784dbca86c7ac422fb79b5d4d4b6917c74256826aab12ee436f2b87fa28"
+kube_controller_checksum_kubectl: "sha256:fb3cbf25e71f414381e8a6b8a2dc2abb19344feea660ac0445ccf5d43a093f10"
+
+kube_controller_cert_dir: "{{ certificate_directory }}"
+kube_controller_cluster_cidr: 10.200.0.0/16
+kube_controller_cluster_ip_range: 10.32.0.0/24
+kube_controller_cluster_name: "{{ kubernetes_clustername | default('kubernetes') }}"
+kube_controller_etcd_cert_dir: "{{ certificate_directory }}"
+kube_controller_node_port_range: 30000-32767
+kube_controller_target_dir: /usr/local/bin
+

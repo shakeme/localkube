@@ -4,6 +4,7 @@
 etcd_version: 3.2.10
 etcd_checksum: "sha256:3f889e6e6ddf73781b14fa40bd4e99eb5ffcbff588a750d3b23517667bffc834"
 etcd_arch: amd64
+etcd_cert_dir: "{{ certificate_directory }}"
 etcd_target_dir: /usr/local/bin
 
 etcd_cluster_hosts_fqdn:

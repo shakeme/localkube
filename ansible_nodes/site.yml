@@ -17,5 +17,15 @@
   roles:
     - etcd
 
+- name: kubernetes controller
+  hosts: controller
+  roles:
+    - kube-controller
+
+- name: worker
+  hosts: worker
+  roles:
+    - docker
+
 # vim: ai expandtab ts=2 sts=2 sw=2
     

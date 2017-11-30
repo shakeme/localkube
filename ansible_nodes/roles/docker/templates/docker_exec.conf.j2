@@ -1,0 +1,12 @@
+[Service]
+ExecStart=
+ExecStart=/usr/bin/dockerd \
+{% if docker_opts is defined %}
+    {% for item in docker_opts %}
+{{ item }} \
+    {% endfor %}
+{% endif %}
+{% if docker_opt_storage_driver is defined %}
+--storage-driver={{ docker_opt_storage_driver }} \
+{% endif %}
+

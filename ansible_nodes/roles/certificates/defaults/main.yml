@@ -2,5 +2,5 @@
 # defaults certificates
 
 certificates_path: ~/.localkube/certs
-certificates_remote_path: /srv/kubernetes
+certificates_remote_path: "{{ certificate_directory }}"
 

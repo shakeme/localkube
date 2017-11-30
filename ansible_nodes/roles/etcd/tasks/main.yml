@@ -2,7 +2,7 @@
 # tasks etcd
 
 - stat:
-    path: {{ etcd_target_dir }}/etcd
+    path: "{{ etcd_target_dir }}/etcd"
   register: result_etcd
 
 - block:
@@ -62,7 +62,7 @@
   lineinfile:
     path: "{{ ansible_env.HOME }}/.bash_aliases"
     regexp: "^alias etcdctl="
-    line: "alias etcdctl=\"sudo etcdctl --ca-file /srv/kubernetes/ca.pem\""
+    line: "alias etcdctl=\"sudo etcdctl --ca-file {{ etcd_cert_dir }}/ca.pem\""
 
 - name: Ensure service files
   template:

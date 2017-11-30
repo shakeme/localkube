@@ -1,0 +1,5 @@
+---
+# tasks docker
+
+- include: "{{ ansible_os_family }}.yml"
+  tags: docker

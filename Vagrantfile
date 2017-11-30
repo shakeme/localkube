@@ -22,8 +22,8 @@ Vagrant.configure("2") do |config|
 
   # provision
   config.vm.provision "shell", inline: <<-SHELL
-    #apt-get update
-    echo "PROVOSION common"
+    apt-get update
+    apt-get dist-upgrade --assume-yes
     apt-get install --assume-yes \
       python \
       virtualbox-guest-utils
@@ -55,7 +55,7 @@ Vagrant.configure("2") do |config|
 
 
   # do not change the number
-  NC = 2
+  NC = 3
   (1..NC).each do |machine_id|
     config.vm.define "controller#{machine_id}" do |controller|
       controller.vm.hostname = "controller#{machine_id}"

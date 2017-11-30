@@ -1,0 +1,76 @@
+---
+# tasks kube-controller
+
+- stat:
+    path: "{{ kube_controller_target_dir }}/kube-apiserver"
+  register: result_kube_controller
+
+- block:
+  - name: Create lib directory
+    file:
+      path: /var/lib/kubernetes
+      state: directory
+      mode: 0750
+      owner: root
+      group: root
+    become: true
+
+  - name: Get binaries
+    get_url:
+      url: "https://storage.googleapis.com/kubernetes-release/release/v{{ kube_controller_version }}/bin/linux/{{ kube_controller_arch }}/{{ item.name }}"
+      checksum: "{{ item.checksum }}"
+      dest: "{{ kube_controller_target_dir }}/{{ item.name }}"
+      mode: 0755
+      owner: root
+      group: root
+    become: true
+    with_items:
+      - { name: "kube-apiserver", checksum: "{{ kube_controller_checksum_apiserver }}" }
+      - { name: "kube-controller-manager", checksum: "{{ kube_controller_checksum_controller_manager }}" }
+      - { name: "kube-scheduler", checksum: "{{ kube_controller_checksum_scheduler }}" }
+      - { name: "kubectl", checksum: "{{ kube_controller_checksum_kubectl }}" }
+
+  when: result_kube_controller.stat.exists == False
+
+- name: Ensure service files
+  template:
+    src: "{{ item }}.j2"
+    dest: /etc/systemd/system/{{ item }}
+    mode: 0644
+    owner: root
+    group: root
+  become: true
+  register: result_kube_controller_service_files
+  with_items:
+    - kube-apiserver.service
+    - kube-controller-manager.service
+    - kube-scheduler.service
+
+- name: Reload service daemon
+  systemd:
+    daemon_reload: yes
+  become: true
+  when: 
+    - item.changed
+    - ansible_service_mgr == "systemd"
+  with_items: "{{ result_kube_controller_service_files.results }}"
+
+- name: Restart service
+  service:
+    name: "{{ item }}"
+    state: restarted
+  become: true
+  when: item.changed
+  with_items: "{{ result_kube_controller_service_files.results }}"
+
+- name: Enable and start services
+  service:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  become: true
+  with_items:
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+
